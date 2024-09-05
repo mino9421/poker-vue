@@ -1,14 +1,14 @@
 <template>
   <div>
     <nav>
-      <NuxtLink to="/chat">Chat</NuxtLink>
+      <NuxtLink to="/chat">Chat - WIP</NuxtLink>
       <NuxtLink to="/poker">Game</NuxtLink>
     </nav>
     <NuxtPage />
     <footer
       class="bg-gray-800 text-white py-4 fixed bottom-0 w-full text-center left-0 right-0"
     >
-      <p>© 2024 My Web App. All rights reserved.</p>
+      <p>© 2024 Poker-Mino. All rights reserved.</p>
     </footer>
   </div>
 </template>

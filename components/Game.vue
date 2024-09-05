@@ -5,19 +5,11 @@
     <div class="table">
       <div class="community-cards">
         <h3>Community Cards</h3>
-        <div class="cards">
-          <img
-            v-for="card in communityCards"
-            :key="card"
-            :src="getCardImage(card)"
-            class="card-image"
-            :alt="card"
-          />
-        </div>
-      </div>
-      <div class="player-hand">
         <div class="player-name">Player ({{ player.credits }} credits)</div>
-        <div class="player-cards">
+      </div>
+      <div v-if="riverDealt" class="result">
+        <h4 class="result-title">Player's Hand:</h4>
+        <div class="cards player-hand">
           <img
             v-for="card in player.cards"
             :key="card"
@@ -26,8 +18,62 @@
             :alt="card"
           />
         </div>
+        <h4 class="result-title">Community Cards:</h4>
+        <div class="cards community-cards">
+          <img
+            v-for="card in communityCards"
+            :key="card"
+            :src="getCardImage(card)"
+            class="card-image"
+            :alt="card"
+          />
+        </div>
+        <h4 class="result-title">Computer's Hand:</h4>
+        <div class="cards computer-hand">
+          <img
+            v-for="card in computer.cards"
+            :key="card"
+            :src="getCardImage(card)"
+            class="card-image"
+            :alt="card"
+          />
+        </div>
+        <button class="close-btn" @click="closePopup">X</button>
+        <h4 class="result-title">Result:</h4>
+        <div class="result-message">
+          {{ resultMessage }}
+        </div>
+      </div>
+      <div class="player-hand">
+        <div class="player-cards">
+          <div class="card-wrapper">
+            <img
+              v-for="card in communityCards"
+              :key="card"
+              :src="getCardImage(card)"
+              class="card-image"
+              :alt="card"
+            />
+          </div>
+        </div>
+      </div>
+      <div class="player-hand">
+        <div class="player-cards">
+          <div class="card-wrapper">
+            <img
+              v-for="card in player.cards"
+              :key="card"
+              :src="getCardImage(card)"
+              class="card-image"
+              :alt="card"
+            />
+          </div>
+        </div>
       </div>
       <div />
+      <div class="pot">
+        <h4>Pot: {{ pot }} credits</h4>
+      </div>
       <div class="controls">
         <button @click="dealCards">Deal Hole Cards</button>
         <button :disabled="flopDealt" @click="dealFlop">Deal Flop</button>
@@ -43,54 +89,15 @@
         >
           Deal River
         </button>
-        <div class="betting">
-          <input
-            v-model="betAmount"
-            type="number"
-            min="1"
-            placeholder="Enter bet amount"
-          />
-          <button @click="placeBet">Place Bet</button>
-        </div>
-        <div class="pot">
-          <h4>Pot: {{ pot }} credits</h4>
-        </div>
-        <div v-if="riverDealt" class="result">
-          <h4 class="result-title">Player's Hand:</h4>
-          <div class="cards player-hand">
-            <img
-              v-for="card in player.cards"
-              :key="card"
-              :src="getCardImage(card)"
-              class="card-image"
-              :alt="card"
-            />
-          </div>
-          <h4 class="result-title">Community Cards:</h4>
-          <div class="cards community-cards">
-            <img
-              v-for="card in communityCards"
-              :key="card"
-              :src="getCardImage(card)"
-              class="card-image"
-              :alt="card"
-            />
-          </div>
-          <h4 class="result-title">Computer's Hand:</h4>
-          <div class="cards computer-hand">
-            <img
-              v-for="card in computer.cards"
-              :key="card"
-              :src="getCardImage(card)"
-              class="card-image"
-              :alt="card"
-            />
-          </div>
-          <h4 class="result-title">Result:</h4>
-          <div class="result-message">
-            {{ resultMessage }}
-          </div>
-        </div>
+      </div>
+      <div class="betting">
+        <input
+          v-model="betAmount"
+          type="number"
+          min="1"
+          placeholder="Enter bet amount"
+        />
+        <button @click="placeBet">Place Bet</button>
       </div>
       <div class="hand-rank">
         <img
@@ -189,6 +196,10 @@ const deck = [
   "clubs_queen",
   "clubs_king",
 ];
+
+const closePopup = () => {
+  riverDealt.value = false;
+};
 
 const shuffleDeck = (deck) => {
   for (let i = deck.length - 1; i > 0; i--) {
@@ -396,9 +407,9 @@ const getCardImage = (card) => {
 
 .table {
   position: relative;
-  width: 80%;
+  width: 90%;
   max-width: 1200px;
-  height: auto;
+  height: 100%;
   background-color: #004d40;
   border-radius: 15px;
   padding: 20px;
@@ -411,7 +422,12 @@ const getCardImage = (card) => {
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
 }
 
-.community-cards,
+.community-cards {
+  display: flex;
+  align-items: baseline;
+  flex-direction: row;
+}
+
 .player-hand {
   width: 100%;
   margin-bottom: 20px;
@@ -442,6 +458,9 @@ const getCardImage = (card) => {
 
 .player-cards {
   display: flex;
+  /* justify-content: center;
+  align-items: center; */
+  gap: 10px;
 }
 
 button {
@@ -460,7 +479,7 @@ button:hover {
 
 .controls {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
   margin-top: 20px;
 }
@@ -485,6 +504,11 @@ button:hover {
   background-color: #004d40;
   border: 2px solid #00796b;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 9999;
 }
 
 .result-title {
@@ -509,5 +533,27 @@ button:hover {
   width: auto;
   height: 350px;
   margin-right: 20px;
+}
+
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: transparent;
+  border: none;
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  color: #333;
+}
+
+.close-btn:hover {
+  color: red;
+}
+
+.card-wrapper {
+  height: 143px;
+  display: flex;
+  gap: inherit;
 }
 </style>
