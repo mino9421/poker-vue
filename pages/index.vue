@@ -19,4 +19,19 @@
 
 <script setup>
 /* No additional script setup needed for basic content */
+defineNuxtRouteMiddleware((to) => {
+  if (to.path === "/") {
+    return navigateTo("/poker");
+  }
+});
+
+definePageMeta({
+  middleware: [
+    function (to) {
+      if (to.path === "/") {
+        return navigateTo("/poker");
+      }
+    },
+  ],
+});
 </script>
